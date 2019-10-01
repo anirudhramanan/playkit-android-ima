@@ -774,7 +774,7 @@ public class IMAPlugin extends PKPlugin implements AdsProvider, com.google.ads.i
     @Override
     public long getDuration() {
         VideoAdPlayer adPlayer = videoPlayerWithAdPlayback != null ? videoPlayerWithAdPlayback.getVideoAdPlayer() : null;
-        if (adPlayer == null) {
+        if (adPlayer == null || adPlayer.getAdProgress() == null) {
             return Consts.TIME_UNSET;
         }
 
@@ -786,7 +786,7 @@ public class IMAPlugin extends PKPlugin implements AdsProvider, com.google.ads.i
     @Override
     public long getCurrentPosition() {
         VideoAdPlayer adPlayer = videoPlayerWithAdPlayback != null ? videoPlayerWithAdPlayback.getVideoAdPlayer() : null;
-        if (adPlayer == null) {
+        if (adPlayer == null || adPlayer.getAdProgress() == null) {
             return Consts.POSITION_UNSET;
         }
 

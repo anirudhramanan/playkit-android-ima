@@ -34,6 +34,7 @@ import com.google.ads.interactivemedia.v3.api.CompanionAdSlot;
 import com.google.ads.interactivemedia.v3.api.ImaSdkFactory;
 import com.google.ads.interactivemedia.v3.api.ImaSdkSettings;
 import com.google.ads.interactivemedia.v3.api.player.VideoAdPlayer;
+import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.kaltura.playkit.MessageBus;
@@ -186,10 +187,11 @@ public class IMAPlugin extends PKPlugin implements AdsProvider, com.google.ads.i
 
         videoPlayerWithAdPlayback = new ExoPlayerWithAdPlayback(context, adConfig.getAdLoadTimeOut(), adConfig.isDebugMode());
         videoPlayerWithAdPlayback.addAdPlaybackEventListener(this);
-        if (videoPlayerWithAdPlayback.getAdPlayerView() == null) {
+        PlayerView adPlayerView = videoPlayerWithAdPlayback.getAdPlayerView();
+        if (adPlayerView == null) {
             return;
         }
-        player.getView().addView(videoPlayerWithAdPlayback.getAdPlayerView());
+        player.getView().addView(adPlayerView);
         this.context = context;
         this.messageBus = messageBus;
         addListeners(player);
@@ -585,8 +587,14 @@ public class IMAPlugin extends PKPlugin implements AdsProvider, com.google.ads.i
 
         log.d("Do requestAdsFromIMA");
         if (adDisplayContainer != null && videoPlayerWithAdPlayback != null) {
-            adDisplayContainer.setPlayer(videoPlayerWithAdPlayback.getVideoAdPlayer());
-            adDisplayContainer.setAdContainer(videoPlayerWithAdPlayback.getAdUiContainer());
+            VideoAdPlayer videoAdPlayer = videoPlayerWithAdPlayback.getVideoAdPlayer();
+            ViewGroup adUiContainer = videoPlayerWithAdPlayback.getAdUiContainer();
+            if (videoAdPlayer != null) {
+                adDisplayContainer.setPlayer(videoAdPlayer);
+            }
+            if (adUiContainer != null) {
+                adDisplayContainer.setAdContainer(adUiContainer);
+            }
         }
 
         // Create the ads request.
